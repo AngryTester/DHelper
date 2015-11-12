@@ -10,7 +10,10 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -157,11 +160,15 @@ public class DTool extends JPanel {
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
-				try {
-					Thread.sleep(10000);
-				} catch (InterruptedException e2) {
-					Toolkit.getDefaultToolkit().beep();
-					JOptionPane.showMessageDialog(null, e2.toString(), "异常信息", JOptionPane.ERROR_MESSAGE);
+				for(int i=0;i<10;i++){//通过判断端口是否被占用来判断appium是否起起来，最长等待20秒
+					if(isPortUsing("127.0.0.1",4723)==false){
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
 				}
 				JSONObject map1 = new JSONObject();
 				JSONObject map2 = new JSONObject();
@@ -586,14 +593,23 @@ public class DTool extends JPanel {
 		return keysToSend;
 	}
 
-	public static void main(String[] args) {
-		String command = "cmd.exe /k start appium -g appium.log";
+	
+	@SuppressWarnings({ "unused", "resource" })
+	public boolean isPortUsing(String host,int port) {  
+        boolean flag = false;  
+        InetAddress theAddress = null;
 		try {
-			Process p = Runtime.getRuntime().exec(command);
-			p.waitFor();
-		} catch (Exception e1) {
+			theAddress = InetAddress.getByName(host);
+		} catch (UnknownHostException e1) {
 			e1.printStackTrace();
-		}
-	}
+		}  
+        try {  
+            Socket socket = new Socket(theAddress,port);  
+            flag = true;  
+        } catch (Exception e) {  
+              
+        }
+        return flag;  
+    }  
 
 }
