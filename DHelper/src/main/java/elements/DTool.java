@@ -180,6 +180,9 @@ public class DTool extends JPanel {
 					map1.put("app", apkSourceValue.getText());
 					map1.put("appPackage", appPackage.getText());
 					map1.put("appActivity", appActivity.getText());
+					//支持中文输入
+					map1.put("unicodeKeyboard",true);
+					map1.put("resetKeyboard", true);
 					map2.put("desiredCapabilities", map1);
 					CloseableHttpClient httpClient = HttpClients.createDefault();
 					HttpPost method = new HttpPost("http://127.0.0.1:4723/wd/hub/session");
